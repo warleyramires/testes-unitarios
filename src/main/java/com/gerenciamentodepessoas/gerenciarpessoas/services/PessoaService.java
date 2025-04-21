@@ -6,6 +6,8 @@ import com.gerenciamentodepessoas.gerenciarpessoas.entities.Pessoa;
 import com.gerenciamentodepessoas.gerenciarpessoas.repositories.PessoaRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PessoaService {
 
@@ -27,6 +29,21 @@ public class PessoaService {
             return response;
         }catch (Exception e){
             throw new RuntimeException("Não foi possivel criar pessoa: " + e.getMessage());
+        }
+    }
+
+    public List<PessoaResponseDTO> listarPessoas(){
+        try{
+            List<Pessoa> pessoas = pessoaRepository.findAll();
+
+            return pessoas.stream()
+                    .map(pessoa -> new PessoaResponseDTO(
+                            pessoa.getId(),
+                            pessoa.getNome(),
+                            pessoa.getDataNascimento()
+                    )).toList();
+        }catch (Exception e){
+            throw new RuntimeException(e.getMessage());
         }
     }
 }
