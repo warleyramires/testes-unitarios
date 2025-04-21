@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/enderecos")
 public class EnderecoController {
@@ -28,5 +30,26 @@ public class EnderecoController {
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<EnderecoResponseDTO>> listarEnderecos(){
+        try{
+            List<EnderecoResponseDTO> listEndereco = enderecoService.listAllEnderecos();
+
+            return ResponseEntity.status(HttpStatus.OK).body(listEndereco);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/{pessoaId}")
+    public ResponseEntity<List<EnderecoResponseDTO>> listrEnderecosByPessoa(@PathVariable Long pessoaId){
+       try{
+           List<EnderecoResponseDTO> listEndereco = enderecoService.listEnderecosByPessoaId(pessoaId);
+           return ResponseEntity.status(HttpStatus.OK).body(listEndereco);
+       }catch (Exception e){
+           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+       }
     }
 }

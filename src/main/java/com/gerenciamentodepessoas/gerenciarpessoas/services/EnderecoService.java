@@ -8,6 +8,8 @@ import com.gerenciamentodepessoas.gerenciarpessoas.repositories.EnderecoReposito
 import com.gerenciamentodepessoas.gerenciarpessoas.repositories.PessoaRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class EnderecoService {
 
@@ -42,5 +44,44 @@ public class EnderecoService {
                 salvo.getCidade()
         );
 
+    }
+
+    public List<EnderecoResponseDTO> listAllEnderecos() {
+       try{
+           List<Endereco> listaEnderecos = enderecoRepository.findAll();
+
+           return listaEnderecos.stream().map(
+                   endereco -> new EnderecoResponseDTO(
+                           endereco.getId(),
+                           endereco.getLogradouro(),
+                           endereco.getCep(),
+                           endereco.getNumero(),
+                           endereco.getBairro(),
+                           endereco.getCidade()
+                   )).toList();
+       }catch (Exception e){
+           throw new RuntimeException("Erro ao listar enderecos");
+       }
+    }
+
+    public List<EnderecoResponseDTO> listEnderecosByPessoaId(Long pessoaId) {
+        try{
+            Pessoa pessoa = pessoaRepository.findById(pessoaId)
+                    .orElseThrow(()-> new RuntimeException("Pessoa não encontrada"));
+            List<Endereco> enderecoList = enderecoRepository.findByPessoa(pessoa);
+
+            return enderecoList.stream().map(
+                    endereco -> new EnderecoResponseDTO(
+                            endereco.getId(),
+                            endereco.getLogradouro(),
+                            endereco.getCep(),
+                            endereco.getNumero(),
+                            endereco.getBairro(),
+                            endereco.getCidade()
+                    )).toList();
+
+        }catch (Exception e){
+            throw new RuntimeException("Erro ao listar enderecos");
+        }
     }
 }
